@@ -120,3 +120,6 @@
     @apply bg-background text-foreground;
   }
 }
+.hover\:border-muted-foreground:hover {
+  border-color: hsl(var(--muted-foreground));
+}
