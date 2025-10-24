@@ -2,16 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { TRPCReactProvider } from "@/trpc/client";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Flowseidon",
@@ -26,10 +17,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className=''
       >
         <TRPCReactProvider>
         {children}
+        <Toaster/>
         </TRPCReactProvider>
       </body>
     </html>

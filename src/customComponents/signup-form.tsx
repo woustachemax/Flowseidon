@@ -5,31 +5,56 @@ import { Card, CardDescription, CardContent, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormLabel, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
-import { useRouter } from "next/navigation"
 import { z } from "zod"
 import { cn } from "@/lib/utils"
 import { MotionButton } from "./custom-button"
 import { MellowInput } from "./mellow-input"
+import { authClient } from "@/lib/auth-client"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
-const formSchema = z.object({
-  email: z.string().email("Please enter a valid email"),
-  password: z.string().min(8, "Password should be at least 8 characters"),
-})
+const formSchema = z
+  .object({
+    email: z.string().email("Please enter a valid email"),
+    password: z.string().min(8, "Password should be at least 8 characters"),
+    confirmPassword: z.string().min(8, "Confirm Password should be at least 8 characters"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  })
 
-type LoginVal = z.infer<typeof formSchema>
+type SignupVal = z.infer<typeof formSchema>
 
-export function LoginPage() {
-  const router = useRouter()
-  const form = useForm<LoginVal>({
+export function SignupPage() {
+  const router = useRouter();
+
+  const form = useForm<SignupVal>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     },
   })
 
-  const onSubmit = async (values: LoginVal) => {
-    console.log(values)
+  const onSubmit = async (values: SignupVal) => {
+    await authClient.signUp.email(
+        {
+            name: values.email,
+            email: values.email,
+            password: values.password,
+            callbackURL: "/"
+        },
+        {
+            onSuccess: ()=>{
+                router.push('/')
+            },
+            onError: (ctx)=>{
+                toast(ctx.error.message)
+            }
+        }
+    )
   }
 
   const isPending = form.formState.isSubmitting
@@ -38,8 +63,8 @@ export function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-black">
       <Card className="w-full max-w-md bg-neutral-900 border border-neutral-800 shadow-[0_0_15px_rgba(52,211,153,0.1)]">
         <CardHeader className="text-center">
-          <CardTitle className="text-neutral-100 text-xl">Welcome back to Flowseidon!</CardTitle>
-          <CardDescription className="text-neutral-400">Login to Continue</CardDescription>
+          <CardTitle className="text-neutral-100 text-xl">Create your Flowseidon account</CardTitle>
+          <CardDescription className="text-neutral-400">Join the flow</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -89,15 +114,34 @@ export function LoginPage() {
                     )}
                   />
 
+                  <FormField
+                    control={form.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-neutral-500">Confirm Password</FormLabel>
+                        <FormControl>
+                          <MellowInput
+                            type="password"
+                            placeholder="Re-enter password"
+                            error={!!form.formState.errors.confirmPassword}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage className="text-red-400/70 text-xs mt-1.5" />
+                      </FormItem>
+                    )}
+                  />
+
                   <MotionButton type="submit" disabled={isPending}>
-                    Login
+                    Sign Up
                   </MotionButton>
                 </div>
 
                 <div className="text-center text-sm text-neutral-400">
-                  Don't have an account?{" "}
-                  <Link href="/signup" className="underline text-emerald-400 hover:text-emerald-300">
-                    Signup
+                  Already have an account?{" "}
+                  <Link href="/login" className="underline text-emerald-400 hover:text-emerald-300">
+                    Login
                   </Link>
                 </div>
               </div>
