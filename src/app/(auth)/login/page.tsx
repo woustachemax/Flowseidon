@@ -1,10 +1,13 @@
-import { LoginPage } from "@/customComponents/login-page"
+import { LoginPage } from "@/custom-components/login-page"
+import { dontrequireAuth } from "@/lib/auth-utils"
+import Image from "next/image"
 
-function Page (){
+async function Page (){
+    await dontrequireAuth();
+    
     return(
-        <div> 
-            <LoginPage/>
-        </div>
+    
+        <LoginPage/>
     )
 }
 

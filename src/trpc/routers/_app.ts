@@ -1,11 +1,16 @@
-import { baseProcedure, createTRPCRouter } from '../init';
+import { baseProcedure, createTRPCRouter, protectedProcedure } from '../init';
 import client from '@/lib/db';
 
 export const appRouter = createTRPCRouter({
-  getUsers: baseProcedure
+  getUsers: protectedProcedure
    
-    .query(() => {
-        return client.user.findMany()
+    .query(({ctx}) => {
+      console.log({userId: ctx.auth.user.id})
+        return client.user.findMany({
+          where:{
+            id: ctx.auth.user.id
+          }
+        })
     }),
 });
 // export type definition of API

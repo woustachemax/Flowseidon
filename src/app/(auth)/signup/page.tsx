@@ -1,6 +1,8 @@
-import { SignupPage } from "@/customComponents/signup-form"
+import { SignupPage } from "@/custom-components/signup-form"
+import { dontrequireAuth } from "@/lib/auth-utils"
 
-function Page (){
+async function Page (){
+    await dontrequireAuth();
     return(
         <div> 
             <SignupPage/>
