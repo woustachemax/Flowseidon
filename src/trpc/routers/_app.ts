@@ -1,17 +1,27 @@
-import { baseProcedure, createTRPCRouter, protectedProcedure } from '../init';
+import { inngest } from '@/inngest/client';
+import { createTRPCRouter, protectedProcedure } from '../init';
 import client from '@/lib/db';
+import { email } from 'zod';
 
 export const appRouter = createTRPCRouter({
-  getUsers: protectedProcedure
-   
-    .query(({ctx}) => {
-      console.log({userId: ctx.auth.user.id})
-        return client.user.findMany({
-          where:{
-            id: ctx.auth.user.id
-          }
-        })
+  getWorkflows: protectedProcedure.query(({ctx}) => {
+        return client.workflow.findMany()
     }),
+
+  createWorkflows: protectedProcedure.mutation(async ({ctx})=>{
+    await inngest.send({
+      name: 'test/hello.world',
+      data:{
+        email: 'sid@example.com'
+      }
+    })
+    return client.workflow.create({
+      data:{
+        name: 'joker'
+      }
+    })
+  })
+
 });
-// export type definition of API
+
 export type AppRouter = typeof appRouter;
