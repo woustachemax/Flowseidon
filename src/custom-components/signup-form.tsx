@@ -72,14 +72,6 @@ export function SignupPage() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <div className="grid gap-6">
-                <div className="flex flex-col gap-4">
-                  <MotionButton type="button">
-                    <Image alt='github' src="/github.svg"
-                       width={20} height={20}/>Signup with GitHub</MotionButton>
-                  <MotionButton type="button">
-                    <Image alt='google' src="/google.svg"
-                        width={20} height={20}/>Continue with Google</MotionButton>
-                </div>
 
                 <div className="grid gap-6">
                   <FormField
@@ -144,9 +136,26 @@ export function SignupPage() {
                   </MotionButton>
                 </div>
 
+                <div className="flex items-center gap-2">
+                  <hr className="flex-1 border-neutral-500" />
+                  <span className="text-cyan-700">or</span>
+                  <hr className="flex-1 border-neutral-500" />
+                </div>
+
+                <div className="flex flex-row gap-1">
+                  <MotionButton type="button">
+                    <Image alt='github' src="/github.svg" width={20} height={20}/>
+                    with GitHub
+                  </MotionButton>
+                  <MotionButton type="button">
+                    <Image alt='google' src="/google.svg" width={20} height={20}/>
+                    with Google
+                  </MotionButton>
+                </div>
+
                 <div className="text-center text-sm text-neutral-400">
                   Already have an account?{" "}
-                  <Link href="/login" className="underline text-emerald-400 hover:text-emerald-300">
+                  <Link href="/login" className="underline text-cyan-700 hover:text-cyan-500">
                     Login
                   </Link>
                 </div>

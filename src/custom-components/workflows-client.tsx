@@ -31,7 +31,7 @@ export default function WorkflowClient({ data }: { data: WorkflowsData }) {
     <div className="min-h-screen bg-black p-8">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-neutral-100 text-2xl mb-6">Session Data</h1>
-        <pre className="bg-neutral-900 text-emerald-400 p-6 rounded-lg overflow-auto border border-neutral-800">
+        <pre className="bg-neutral-900 text-cyan-400 shadow-gray-200 p-6 rounded-lg overflow-auto border border-neutral-800">
           {JSON.stringify(data, null, 2)}
         </pre>
         <div className="mt-6">

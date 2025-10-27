@@ -28,8 +28,8 @@ export const MellowInput = React.forwardRef<
         border-0 ring-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0
         ${className}`}
       />
-      <span className={`absolute inset-x-0 -bottom-px ${error ? 'bg-gradient-to-r from-transparent via-rose-500 to-transparent' : 'bg-gradient-to-r from-transparent via-emerald-500 to-transparent'} h-px w-3/4 mx-auto pointer-events-none`} />
-      <span className={`absolute inset-x-0 -bottom-px opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 ${error ? 'bg-gradient-to-r from-transparent via-rose-500 to-transparent' : 'bg-gradient-to-r from-transparent via-emerald-500 to-transparent'} h-[4px] w-full mx-auto blur-sm pointer-events-none`} />
+      <span className={`absolute inset-x-0 -bottom-px ${error ? 'bg-gradient-to-r from-transparent via-rose-500 to-transparent' : 'bg-gradient-to-r from-transparent via-cyan-500 to-transparent'} h-px w-3/4 mx-auto pointer-events-none`} />
+      <span className={`absolute inset-x-0 -bottom-px opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 ${error ? 'bg-gradient-to-r from-transparent via-fuchsia-500 to-transparent' : 'bg-gradient-to-r from-transparent via-emerald-500 to-transparent'} h-[4px] w-full mx-auto blur-sm pointer-events-none`} />
     </div>
   )
 })

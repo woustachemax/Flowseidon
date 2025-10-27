@@ -25,7 +25,7 @@ export default function LogoutButton() {
     >
       Logout
       <span className="absolute inset-x-0 bottom-0 bg-gradient-to-r from-transparent via-rose-500 to-transparent h-px w-3/4 mx-auto" />
-      <span className="absolute inset-x-0 bottom-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-transparent via-rose-500 to-transparent h-[4px] w-full mx-auto blur-sm" />
+      <span className="absolute inset-x-0 bottom-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-transparent via-fuchsia-500 to-transparent h-[4px] w-full mx-auto blur-sm" />
     </Button>
   )
 }
