@@ -1,8 +1,21 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Card, CardDescription, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form, FormControl, FormLabel, FormField, FormItem, FormMessage } from "@/components/ui/form"
+import {
+  Card,
+  CardDescription,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  Form,
+  FormControl,
+  FormLabel,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -12,6 +25,7 @@ import { authClient } from "@/lib/auth-client"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import Image from "next/image"
+
 const formSchema = z
   .object({
     email: z.email("Please enter a valid email"),
@@ -26,7 +40,7 @@ const formSchema = z
 type SignupVal = z.infer<typeof formSchema>
 
 export function SignupPage() {
-  const router = useRouter();
+  const router = useRouter()
 
   const form = useForm<SignupVal>({
     resolver: zodResolver(formSchema),
@@ -39,47 +53,54 @@ export function SignupPage() {
 
   const onSubmit = async (values: SignupVal) => {
     await authClient.signUp.email(
-        {
-            name: values.email,
-            email: values.email,
-            password: values.password,
-            callbackURL: "/"
+      {
+        name: values.email,
+        email: values.email,
+        password: values.password,
+        callbackURL: "/",
+      },
+      {
+        onSuccess: () => router.push("/"),
+        onError: (ctx) => {
+          toast(ctx.error.message)
         },
-        {
-            onSuccess: ()=>{
-                router.push('/')
-            },
-            onError: (ctx)=>{
-                toast(ctx.error.message)
-            }
-        }
+      }
     )
   }
 
   const isPending = form.formState.isSubmitting
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black">
-      <Card className="w-full max-w-md bg-neutral-900 border border-neutral-800 shadow-[0_0_15px_rgba(52,211,153,0.1)]">
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black transition-colors duration-300">
+      <Card
+        className="w-full max-w-md 
+        bg-neutral-100 dark:bg-neutral-900 
+        border border-neutral-300 dark:border-neutral-800 
+        shadow-[0_0_15px_rgba(52,211,153,0.1)] dark:shadow-[0_0_15px_rgba(52,211,153,0.1)]"
+      >
         <CardHeader className="text-center">
-          <CardTitle className="text-gray-200 text-xl flex items-center justify-center gap-2">
+          <CardTitle className="text-gray-800 dark:text-gray-200 text-xl flex items-center justify-center gap-2">
             Flowseidon
             <Image src="/logo.svg" alt="logo" width={24} height={24} />
           </CardTitle>
-          <CardDescription className="text-neutral-400">Join the Flow!</CardDescription>
+          <CardDescription className="text-neutral-600 dark:text-neutral-400">
+            Join the Flow!
+          </CardDescription>
         </CardHeader>
+
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <div className="grid gap-6">
-
                 <div className="grid gap-6">
                   <FormField
                     control={form.control}
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-neutral-500">Email</FormLabel>
+                        <FormLabel className="text-neutral-700 dark:text-neutral-500">
+                          Email
+                        </FormLabel>
                         <FormControl>
                           <MellowInput
                             type="email"
@@ -88,7 +109,7 @@ export function SignupPage() {
                             {...field}
                           />
                         </FormControl>
-                        <FormMessage className="text-red-400/70 text-xs mt-1.5" />
+                        <FormMessage className="text-rose-500/70 text-xs mt-1.5" />
                       </FormItem>
                     )}
                   />
@@ -98,7 +119,9 @@ export function SignupPage() {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-neutral-500">Password</FormLabel>
+                        <FormLabel className="text-neutral-700 dark:text-neutral-500">
+                          Password
+                        </FormLabel>
                         <FormControl>
                           <MellowInput
                             type="password"
@@ -107,7 +130,7 @@ export function SignupPage() {
                             {...field}
                           />
                         </FormControl>
-                        <FormMessage className="text-red-400/70 text-xs mt-1.5" />
+                        <FormMessage className="text-rose-500/70 text-xs mt-1.5" />
                       </FormItem>
                     )}
                   />
@@ -117,7 +140,9 @@ export function SignupPage() {
                     name="confirmPassword"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-neutral-500">Confirm Password</FormLabel>
+                        <FormLabel className="text-neutral-700 dark:text-neutral-500">
+                          Confirm Password
+                        </FormLabel>
                         <FormControl>
                           <MellowInput
                             type="password"
@@ -126,7 +151,7 @@ export function SignupPage() {
                             {...field}
                           />
                         </FormControl>
-                        <FormMessage className="text-red-400/70 text-xs mt-1.5" />
+                        <FormMessage className="text-rose-500/70 text-xs mt-1.5" />
                       </FormItem>
                     )}
                   />
@@ -137,25 +162,28 @@ export function SignupPage() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <hr className="flex-1 border-neutral-500" />
-                  <span className="text-cyan-700">or</span>
-                  <hr className="flex-1 border-neutral-500" />
+                  <hr className="flex-1 border-neutral-400 dark:border-neutral-500" />
+                  <span className="text-cyan-700 dark:text-cyan-600">or</span>
+                  <hr className="flex-1 border-neutral-400 dark:border-neutral-500" />
                 </div>
 
                 <div className="flex flex-row gap-1">
                   <MotionButton type="button">
-                    <Image alt='github' src="/github.svg" width={20} height={20}/>
+                    <Image alt="github" src="/github.svg" width={20} height={20} />
                     with GitHub
                   </MotionButton>
                   <MotionButton type="button">
-                    <Image alt='google' src="/google.svg" width={20} height={20}/>
+                    <Image alt="google" src="/google.svg" width={20} height={20} />
                     with Google
                   </MotionButton>
                 </div>
 
-                <div className="text-center text-sm text-neutral-400">
+                <div className="text-center text-sm text-neutral-600 dark:text-neutral-400">
                   Already have an account?{" "}
-                  <Link href="/login" className="underline text-cyan-700 hover:text-cyan-500">
+                  <Link
+                    href="/login"
+                    className="underline text-cyan-700 dark:text-cyan-600 hover:text-cyan-500 dark:hover:text-cyan-400"
+                  >
                     Login
                   </Link>
                 </div>
