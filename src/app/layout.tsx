@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { TRPCReactProvider } from "@/trpc/client";
 import { Toaster } from "sonner";
 import "./globals.css";
+import { ThemedToaster } from "@/custom-components/custom-toast";
 
 export const metadata: Metadata = {
   title: "Flowseidon",
@@ -37,7 +38,7 @@ export default function RootLayout({
       >
         <TRPCReactProvider>
           {children}
-          <Toaster />
+          <ThemedToaster/>
         </TRPCReactProvider>
       </body>
     </html>

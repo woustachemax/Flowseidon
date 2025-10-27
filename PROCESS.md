@@ -8,6 +8,10 @@ Initialized a Next.js project with Turbopack for faster development builds and i
 
 Built login and signup pages using Better Auth for authentication handling and shadcn/ui components for the UI foundation. Implemented Framer Motion animations to add smooth transitions and micro-interactions throughout the authentication flows. Established a dark mode theme system across the entire application with emerald accent colors featuring glow effects for visual emphasis and modern aesthetic appeal.
 
-## Day 3: Background Jobs
+## Day 3: Background Jobs & tRPC Client Configuration
 
-Created a workflow model in prisma schema, tried implementing background jobs, but the only way to do those were to add `await new Promise((resolve)=>{setTimeout(resolve, 5000)})`, which if failed lead to the user having to redo the process and wait again for it to happen until it becomes a vicious cycle, to solve that though, we'll be using `Inngest`
+Created a workflow model in Prisma schema and attempted implementing background jobs. Initial approach using `await new Promise((resolve)=>{setTimeout(resolve, 5000)})` proved problematic - failures forced users to restart the entire process and wait again, creating a frustrating loop. Solution: integrated Inngest for reliable background job processing with automatic retries and failure handling.
+
+Encountered major debugging session with tRPC client configuration. Initial setup used `createTRPCContext` from `@trpc/tanstack-react-query` which caused conflicts when mixing `"use client"` components with server-only code (`next/headers` in auth utilities). After extensive troubleshooting, switched to the standard `createTRPCReact` API which properly exports tRPC hooks (`trpc.useQuery()`, `trpc.useMutation()`, `trpc.useUtils()`). This resolved the client/server boundary issues and enabled proper React Query integration in client components.
+
+Integrated Vercel AI SDK with multiple AI providers: Anthropic (Claude), OpenAI (GPT), and Google Gemini for workflow automation features. Key learning: Next.js App Router requires strict separation between server components (which can use `next/headers` and tRPC server calls) and client components (which use React hooks and tRPC client). Can't mix both in the same component without proper abstraction layers.

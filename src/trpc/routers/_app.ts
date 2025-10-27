@@ -1,9 +1,18 @@
 import { inngest } from '@/inngest/client';
-import { createTRPCRouter, protectedProcedure } from '../init';
+import { baseProcedure, createTRPCRouter, protectedProcedure } from '../init';
 import client from '@/lib/db';
 import { email } from 'zod';
 
+
 export const appRouter = createTRPCRouter({
+  testai: baseProcedure.mutation(async (ctx)=>{
+      await inngest.send({
+        name: 'execute/ai'
+      })
+
+      return {success: true, message: 'job queued'}
+  }),
+
   getWorkflows: protectedProcedure.query(({ctx}) => {
         return client.workflow.findMany()
     }),

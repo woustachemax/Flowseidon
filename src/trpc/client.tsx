@@ -1,20 +1,23 @@
 'use client';
-import type { QueryClient } from '@tanstack/react-query';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { createTRPCClient, httpBatchLink } from '@trpc/client';
-import { createTRPCContext } from '@trpc/tanstack-react-query';
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { createTRPCReact } from '@trpc/react-query';
+import { httpBatchLink } from '@trpc/client';
 import { useState } from 'react';
-import { makeQueryClient } from './query-client';
 import type { AppRouter } from './routers/_app';
-export const { TRPCProvider, useTRPC } = createTRPCContext<AppRouter>();
+
+export const trpc = createTRPCReact<AppRouter>();
+
 let browserQueryClient: QueryClient;
+
 function getQueryClient() {
   if (typeof window === 'undefined') {
-    return makeQueryClient();
+    return new QueryClient();
   }
-  if (!browserQueryClient) browserQueryClient = makeQueryClient();
+  if (!browserQueryClient) browserQueryClient = new QueryClient();
   return browserQueryClient;
 }
+
 function getUrl() {
   const base = (() => {
     if (typeof window !== 'undefined') return '';
@@ -23,26 +26,24 @@ function getUrl() {
   })();
   return `${base}/api/trpc`;
 }
-export function TRPCReactProvider(
-  props: Readonly<{
-    children: React.ReactNode;
-  }>,
-) {
-  const queryClient = getQueryClient();
+
+export function TRPCReactProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [trpcClient] = useState(() =>
-    createTRPCClient<AppRouter>({
-      links: [
-        httpBatchLink({
-          url: getUrl(),
-        }),
-      ],
+    trpc.createClient({
+      links: [httpBatchLink({ url: getUrl() })],
     }),
   );
+  const queryClient = getQueryClient();
+
   return (
     <QueryClientProvider client={queryClient}>
-      <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
-        {props.children}
-      </TRPCProvider>
+      <trpc.Provider client={trpcClient} queryClient={queryClient}>
+        {children}
+      </trpc.Provider>
     </QueryClientProvider>
   );
 }
