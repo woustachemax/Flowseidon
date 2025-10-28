@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { TRPCReactProvider } from "@/trpc/client";
-import { Toaster } from "sonner";
-import "./globals.css";
 import { ThemedToaster } from "@/custom-components/custom-toast";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Flowseidon",
@@ -20,25 +19,16 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
 });
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable}`}
-        style={{
-          backgroundColor: "black",
-          color: "white",
-          fontFamily: "var(--font-geist-sans), sans-serif",
-          WebkitFontSmoothing: "antialiased",
-        }}
+        className={`${geistSans.variable} ${geistMono.variable} bg-white dark:bg-black text-neutral-900 dark:text-neutral-100 font-sans transition-colors duration-300`}
+        style={{ WebkitFontSmoothing: "antialiased" }}
       >
         <TRPCReactProvider>
           {children}
-          <ThemedToaster/>
+          <ThemedToaster />
         </TRPCReactProvider>
       </body>
     </html>

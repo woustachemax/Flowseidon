@@ -15,3 +15,7 @@ Created a workflow model in Prisma schema and attempted implementing background 
 Encountered major debugging session with tRPC client configuration. Initial setup used `createTRPCContext` from `@trpc/tanstack-react-query` which caused conflicts when mixing `"use client"` components with server-only code (`next/headers` in auth utilities). After extensive troubleshooting, switched to the standard `createTRPCReact` API which properly exports tRPC hooks (`trpc.useQuery()`, `trpc.useMutation()`, `trpc.useUtils()`). This resolved the client/server boundary issues and enabled proper React Query integration in client components.
 
 Integrated Vercel AI SDK with multiple AI providers: Anthropic (Claude), OpenAI (GPT), and Google Gemini for workflow automation features. Key learning: Next.js App Router requires strict separation between server components (which can use `next/headers` and tRPC server calls) and client components (which use React hooks and tRPC client). Can't mix both in the same component without proper abstraction layers.
+
+## Day 4: Added Sentry and Sidebar
+
+Added sentry to have greater understanding of errors and why the errors were made, with session replay, logs and monitoring

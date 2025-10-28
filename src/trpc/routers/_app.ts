@@ -1,7 +1,6 @@
 import { inngest } from '@/inngest/client';
 import { baseProcedure, createTRPCRouter, protectedProcedure } from '../init';
 import client from '@/lib/db';
-import { email } from 'zod';
 
 
 export const appRouter = createTRPCRouter({
