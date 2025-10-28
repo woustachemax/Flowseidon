@@ -16,19 +16,45 @@ export default function LogoutButton() {
   };
 
   return (
-    <Button
-      onClick={handleLogout}
-      className={`group relative px-12 py-3 transition-colors
-        bg-white text-neutral-800
-        dark:bg-black dark:text-neutral-200
-        border border-neutral-300 dark:border-neutral-800
-        shadow-[0_1px_2px_rgba(0,0,0,0.05)_inset,_0_-1px_2px_rgba(0,0,0,0.05)_inset]
-        dark:shadow-[0_1px_2px_rgba(255,255,255,0.05)_inset,_0_-1px_2px_rgba(255,255,255,0.05)_inset]
-        hover:bg-neutral-100 dark:hover:bg-neutral-900`}
-    >
-      Logout
-      <span className="absolute inset-x-0 bottom-0 bg-gradient-to-r from-transparent via-rose-500 to-transparent h-px w-3/4 mx-auto" />
-      <span className="absolute inset-x-0 bottom-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-transparent via-fuchsia-500 to-transparent h-[4px] w-full mx-auto blur-sm" />
-    </Button>
+    <div className="relative group">
+      <div 
+        className="absolute inset-0 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        style={{
+          background: 'conic-gradient(from var(--r, 0deg), transparent 0%, rgb(244, 63, 94) 10%, transparent 20%)',
+          animation: 'rotating 3s linear infinite paused'
+        }}
+      />
+      <Button
+        onClick={handleLogout}
+        className={`relative px-12 py-3 transition-colors
+          bg-transparent text-neutral-800
+          dark:bg-transparent dark:text-neutral-200
+          border border-rose-500/50
+          hover:bg-neutral-100/50 dark:hover:bg-neutral-900/50
+          hover:border-transparent
+          shadow-none
+          m-[2px]`}
+      >
+        Logout
+      </Button>
+      <style jsx>{`
+        @property --r {
+          syntax: '<angle>';
+          inherits: false;
+          initial-value: 0deg;
+        }
+        .group:hover > div {
+          animation: rotating 3s linear infinite !important;
+        }
+        @keyframes rotating {
+          0% {
+            --r: 0deg;
+          }
+          100% {
+            --r: 360deg;
+          }
+        }
+      `}</style>
+    </div>
   );
 }
