@@ -37,32 +37,8 @@ export const protectedProcedure = baseProcedure.use(async ({ ctx, next }) => {
 });
 
 export const premiumProcedure = protectedProcedure.use(async ({ ctx, next }) => {
-  const session = await auth.api.getSession({
-    headers: await headers()
-  });
-
-  if (!session) {
-    throw new TRPCError({
-      code: 'UNAUTHORIZED',
-      message: 'Unauthorized'
-    });
-  }
-
-  const user = session.user as any;
-  
-  const hasActiveSubscription = user.hasActiveSubscription || false;
-
-  if (!hasActiveSubscription) {
-    throw new TRPCError({
-      code: 'FORBIDDEN',
-      message: 'Premium subscription required'
-    });
-  }
-
-  return next({ 
-    ctx: { 
-      ...ctx, 
-      session
-    } 
+  throw new TRPCError({
+    code: 'FORBIDDEN',
+    message: 'Premium subscription required'
   });
 });

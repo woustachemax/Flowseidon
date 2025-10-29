@@ -81,9 +81,15 @@ const AppSidebar = () => {
         <Sidebar collapsible="icon">
             <SidebarHeader className="p-4 relative">
                 <Link href='/workflows' prefetch>
-                    <div className="flex items-center gap-2 px-2">
-                        <Image src="/logo.svg" alt="Flowseidon" width={24} height={24} />
-                        <span className="font-semibold text-neutral-800 dark:text-neutral-200">
+                    <div className="flex items-center gap-2 px-2 min-w-0">
+                        <Image 
+                            src="/logo.svg" 
+                            alt="Flowseidon" 
+                            width={24} 
+                            height={24}
+                            className="flex-shrink-0"
+                        />
+                        <span className="font-semibold text-neutral-800 dark:text-neutral-200 truncate group-data-[collapsible=icon]:hidden">
                             Flowseidon
                         </span>
                     </div>
@@ -136,8 +142,8 @@ const AppSidebar = () => {
                                             `}
                                         >
                                             <Link href={item.url} prefetch className="flex items-center gap-x-3">
-                                                <item.icon className="size-4" />
-                                                <span>{item.title}</span>
+                                                <item.icon className="size-4 flex-shrink-0" />
+                                                <span className="truncate">{item.title}</span>
                                             </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
@@ -148,65 +154,70 @@ const AppSidebar = () => {
                 ))}
             </SidebarContent>
 
-            <SidebarFooter className="p-4 space-y-2">
-            {!HasActiveSubscription && !isLoading &&(
-                <>
+    <SidebarFooter className="p-4 relative">
+    <SidebarMenu>
+        {!HasActiveSubscription && !isLoading && (
+            <>
                 {footerItems.map((item) => (
-                    <button
-                        key={item.title}
-                        onClick={item.action}
-                        className={`group relative w-full px-4 h-10 transition-all flex items-center gap-3 text-sm
-                            text-neutral-600 dark:text-neutral-400
-                            hover:text-neutral-800 dark:hover:text-neutral-200
-                            rounded-md
-                            ${item.className || ''}
-                        `}
-                    >
-                        <item.icon className="size-4" />
-                        <span>{item.title}</span>
-                    </button>
+                    <SidebarMenuItem key={item.title} className="list-none">
+                        <SidebarMenuButton
+                            onClick={item.action}
+                            className={`gap-x-3 h-10 px-4 transition-all
+                                text-neutral-600 dark:text-neutral-400
+                                hover:text-neutral-800 dark:hover:text-neutral-200
+                                rounded-md
+                                ${item.className || ''}
+                            `}
+                        >
+                            <item.icon className="size-4 flex-shrink-0" />
+                            <span className="truncate">{item.title}</span>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
                 ))}
-                </>
-                )}
+            </>
+        )}
+        
+        <SidebarMenuItem className="list-none">
+            <SidebarMenuButton
+                onClick={handleLogout}
+                className={`group gap-x-3 h-10 px-4 transition-all
+                    text-neutral-600 dark:text-neutral-400
+                    hover:text-rose-500 dark:hover:text-rose-400
+                    rounded-md overflow-hidden relative
+                `}
+            >
+                <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    style={{
+                        background: 'linear-gradient(135deg, rgba(244, 63, 94, 0.03) 0%, rgba(244, 63, 94, 0.08) 50%, rgba(244, 63, 94, 0.03) 100%)',
+                        backdropFilter: 'blur(8px)',
+                        WebkitBackdropFilter: 'blur(8px)'
+                    }}
+                />
+                <LogOut className="size-4 relative z-10 flex-shrink-0" />
+                <span className="relative z-10 truncate">Logout</span>
                 
-                <button
-                    onClick={handleLogout}
-                    className={`group relative w-full px-4 h-10 transition-all flex items-center gap-3 text-sm
-                        text-neutral-600 dark:text-neutral-400
-                        hover:text-rose-500 dark:hover:text-rose-400
-                        rounded-md overflow-hidden
-                    `}
-                >
-                    <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                        style={{
-                            background: 'linear-gradient(135deg, rgba(244, 63, 94, 0.03) 0%, rgba(244, 63, 94, 0.08) 50%, rgba(244, 63, 94, 0.03) 100%)',
-                            backdropFilter: 'blur(8px)',
-                            WebkitBackdropFilter: 'blur(8px)'
-                        }}
-                    />
-                    <LogOut className="size-4 relative z-10" />
-                    <span className="relative z-10">Logout</span>
-                    
-                    <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                        <span className="absolute inset-0 bg-gradient-to-r from-transparent via-rose-500/20 to-transparent animate-shimmer" />
-                    </span>
-                    
-                    <style jsx>{`
-                        @keyframes shimmer {
-                            0% {
-                                transform: translateX(-100%);
-                            }
-                            100% {
-                                transform: translateX(100%);
-                            }
+                <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-rose-500/20 to-transparent animate-shimmer" />
+                </span>
+                
+                <style jsx>{`
+                    @keyframes shimmer {
+                        0% {
+                            transform: translateX(-100%);
                         }
-                        .animate-shimmer {
-                            animation: shimmer 2s ease-in-out infinite;
+                        100% {
+                            transform: translateX(100%);
                         }
-                    `}</style>
-                </button>
-            </SidebarFooter>
-        </Sidebar>
+                    }
+                    .animate-shimmer {
+                        animation: shimmer 2s ease-in-out infinite;
+                    }
+                `}</style>
+                </SidebarMenuButton>
+            </SidebarMenuItem>
+        </SidebarMenu>
+    </SidebarFooter>
+    </Sidebar>
     )
 }
 

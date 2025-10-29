@@ -39,3 +39,15 @@ Created subscription status hook (`useHasActiveSubscription`) to check user's su
 Implemented complete CRUD operations for workflows using tRPC with `protectedProcedure` middleware. Created router with create, list, getById, updateName, and remove endpoints, all scoped to authenticated users. Established naming convention to use `ctx.session` instead of `ctx.auth` to align with Better Auth's standard practices. Integrated `random-word-slugs` for automatic workflow name generation on creation.
 
 Built tRPC query infrastructure with proper type inference using `inferRouterInputs<AppRouter>` for input types. Created custom React hooks in `hooks/use-workflow.ts` with `useSuspenseWorkflows()` utilizing `useSuspenseQuery` for automatic loading states. Set up server-side prefetching utilities in `trpc/prefetch.ts` to enable SSR data hydration, allowing workflows to be pre-fetched on the server and seamlessly hydrated on the client through `HydrateClient` wrapper component. This architecture ensures optimal performance with no loading spinners on initial page load while maintaining full type safety across the client-server boundary.
+
+## Day 6: Workflows UI & Premium Feature Gating
+
+Built the workflows page UI with reusable entity components. Created `EntityHeader` component with title, description, and action button featuring tasteful microinteractions (Plus icon rotation on hover, subtle shimmer effects, cyan accent colors matching the design system). Implemented `EntityContainer` for consistent page padding and layout structure across entity pages.
+
+Developed workflows feature with `WorkflowsHeader`, `WorkflowList`, and `WorkflowsContainer` components using Suspense boundaries for optimal loading states. Integrated `useCreateWorkflow` mutation hook with `trpc.useUtils()` for query invalidation, toast notifications via Sonner, and automatic navigation to newly created workflows. Implemented proper error handling with `TRPCClientError` type checking.
+
+Created premium feature gating system with `premiumProcedure` middleware in tRPC that checks for active subscriptions and throws `FORBIDDEN` errors when access is denied. Built `useUpgradeModal` hook that catches `TRPCClientError` instances, detects `FORBIDDEN` status codes, and automatically triggers an upgrade modal. Designed `UpgradeModal` component using shadcn/ui AlertDialog that integrates with Better Auth's checkout flow to handle subscription upgrades seamlessly.
+
+Fixed sidebar responsive design issues in mobile/collapsed modes. Added `flex-shrink-0` to icons, `truncate` to text labels, and wrapped footer items in `SidebarMenu` > `SidebarMenuItem` > `SidebarMenuButton` structure to match header alignment. Resolved text overflow issues and ensured all interactive elements maintain proper spacing and alignment across collapsed and expanded states.
+
+Established pattern for protected mutations with upgrade prompts, enabling smooth user experience where free tier users are guided to upgrade when attempting premium features rather than seeing generic error messages.
