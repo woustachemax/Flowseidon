@@ -1,24 +1,38 @@
 "use client"
 
-import { useSuspenseWorkflows } from "../hooks/use-workflows";
-import { Suspense } from "react";
+import { useSuspenseWorkflows } from "@/features/workflows/hooks/use-workflows";
+import { EntityContainer, EntityHeader } from "@/custom-components/entity-components";
 
-function WorkflowList() {
+export default function WorkflowList() {
     const [workflows] = useSuspenseWorkflows();
     
     return (
-        <div>
+        <div className="space-y-2">
             {workflows.map(workflow => (
-                <div key={workflow.id}>{workflow.name}</div>
+                <div 
+                    key={workflow.id}
+                    className="p-4 rounded-md border border-neutral-300 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 text-neutral-800 dark:text-neutral-200"
+                >
+                    {workflow.name}
+                </div>
             ))}
         </div>
     );
 }
 
-export default function Page() {
-    return (
-        <Suspense fallback={<div>Loading workflows...</div>}>
-            <WorkflowList />
-        </Suspense>
-    );
+export const WorkflowsHeader = ({disabled}: {disabled?: boolean}) => {
+    return(
+        <EntityHeader
+            title="Workflows"
+            description="Create and Manage your workflows"
+            onNew={() => {}}
+            newButtonLabel="New Workflow"
+            disabled={disabled}
+            isCreating={false}
+        />
+    )
+}
+
+export const WorkflowsContainer = ({children}: {children: React.ReactNode}) => {
+    return <EntityContainer>{children}</EntityContainer>
 }

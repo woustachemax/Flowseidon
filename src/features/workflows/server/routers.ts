@@ -14,7 +14,7 @@ export const workFlowsRouter = createTRPCRouter({
         });
     }),
 
-    list: protectedProcedure.query(async ({ ctx }) => {
+    getMany: protectedProcedure.query(async ({ ctx }) => {
         return client.workflow.findMany({
             where: {
                 userId: ctx.session.user.id,
@@ -25,7 +25,7 @@ export const workFlowsRouter = createTRPCRouter({
         });
     }),
 
-    getById: protectedProcedure
+    getOne: protectedProcedure
         .input(z.object({ id: z.string() }))
         .query(async ({ ctx, input }) => {
             const workflow = await client.workflow.findUnique({
@@ -45,7 +45,7 @@ export const workFlowsRouter = createTRPCRouter({
             return workflow;
         }),
 
-    updateName: protectedProcedure
+    update: protectedProcedure
         .input(z.object({
             id: z.string(),
             name: z.string().min(1),
@@ -73,7 +73,7 @@ export const workFlowsRouter = createTRPCRouter({
             });
         }),
 
-    remove: protectedProcedure
+    delete: protectedProcedure
         .input(z.object({ id: z.string() }))
         .mutation(async ({ ctx, input }) => {
             const workflow = await client.workflow.findUnique({
