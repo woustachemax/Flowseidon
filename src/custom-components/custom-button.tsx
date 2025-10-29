@@ -1,4 +1,3 @@
-// MotionButton.tsx
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -10,11 +9,11 @@ export const MotionButton = ({
 }: React.ComponentProps<typeof Button>) => {
   return (
     <div className="relative group flex-1">
-      <div className="absolute inset-0 rounded-md pointer-events-none overflow-hidden">
+      <div className="absolute inset-0 rounded-md pointer-events-none overflow-visible">
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
           <div className="absolute inset-0 animate-[spin_3s_linear_infinite]">
             <div 
-              className="absolute inset-0 blur-sm" 
+              className="absolute inset-0 blur-md" 
               style={{ 
                 background: 'conic-gradient(from 0deg, transparent 0%, rgba(6,182,212,0.4) 10%, transparent 20%, transparent 100%)' 
               }} 
@@ -37,8 +36,7 @@ export const MotionButton = ({
         {children}
       </Button>
 
-      <span className="absolute inset-x-0 bottom-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent h-px w-3/4 mx-auto pointer-events-none" />
-      <span className="absolute inset-x-0 bottom-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-transparent via-fuchsia-500 to-transparent h-[4px] w-full mx-auto blur-sm pointer-events-none" />
+      <span className="absolute inset-0 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_20px_rgba(168,85,247,0.3)] pointer-events-none" />
     </div>
   );
 };

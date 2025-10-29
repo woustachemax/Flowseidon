@@ -27,3 +27,11 @@ Implemented application sidebar navigation using shadcn/ui Sidebar components wi
 Resolved Better Auth `trustedOrigins` configuration issue where requests from `localhost:3001` were being rejected. Updated `src/lib/auth.ts` to include multiple trusted origins for development environments, fixing the 403 errors on sign-out requests. Key learning: Better Auth requires explicit origin whitelisting for security, and all development ports need to be included in the `trustedOrigins` array.
 
 Refined component architecture to properly handle flex layouts, ensuring buttons maintain correct sizing when used both individually and in flex containers with gaps. Added proper wrapper div configurations with `flex-1` and `w-full` classes to enable buttons to grow equally in side-by-side layouts while maintaining their mellow glow effects.
+
+## Day 5: Payments Integration & Subscription System
+
+Set up payment processing using Polar.sh for Pro subscription tier management. Created a sandbox account for development mode and integrated it with Better Auth using the `@polar-sh/better-auth` plugin. Configured the Polar SDK client in `src/lib/polar.ts` with Personal Access Token (PAT) authentication pointing to the sandbox environment.
+
+Integrated Polar plugin into Better Auth configuration with checkout, portal, and usage features. Configured product checkout with specific product ID and slug ("Flowseidon-Pro"), enabling authenticated-only checkout flows with custom success URL redirect. Implemented client-side Polar integration by adding `polarClient()` plugin to the auth client for frontend subscription interactions.
+
+Created subscription status hook (`useHasActiveSubscription`) to check user's subscription state and conditionally render UI elements. Updated sidebar to show "Upgrade to Pro" and "Billing Portal" buttons only for non-subscribed users, hiding them once a user has an active subscription. Encountered and resolved several integration issues including token authentication errors (401) caused by invalid product IDs and understanding the distinction between server-side Polar SDK client (custom instance) versus client-side plugin (from `@polar-sh/better-auth` package).

@@ -15,6 +15,7 @@ import { Sidebar,
     SidebarMenuButton
 } from "@/components/ui/sidebar"
 import { authClient } from "@/lib/auth-client"
+import { useHasActiveSubscription } from "@/features/subscriptions/hooks/use-subscitption"
 
 const menuItems = [
     {
@@ -43,19 +44,30 @@ const footerItems = [
     {
         title: "Upgrade to Pro",
         icon: Sparkles,
-        action: () => console.log("Upgrade to Pro"),
+        action: async () => {
+            console.log("Checkout button clicked!");
+            try {
+                const result = await authClient.checkout({
+                    slug: "Flowseidon-Pro"  
+                });
+                console.log("Checkout result:", result);
+            } catch (error) {
+                console.error("Checkout error:", error);
+            }
+        },
         className: "text-cyan-600 dark:text-cyan-400"
     },
     {
         title: "Billing Portal",
         icon: CreditCard,
-        action: () => console.log("Billing Portal")
+        action: () => authClient.customer.portal()
     }
 ]
 
 const AppSidebar = () => {
     const pathname = usePathname()
     const router = useRouter()
+    const {HasActiveSubscription, isLoading} = useHasActiveSubscription();
 
     const handleLogout = async () => {
         await authClient.signOut({
@@ -137,6 +149,8 @@ const AppSidebar = () => {
             </SidebarContent>
 
             <SidebarFooter className="p-4 space-y-2">
+            {!HasActiveSubscription && !isLoading &&(
+                <>
                 {footerItems.map((item) => (
                     <button
                         key={item.title}
@@ -152,6 +166,8 @@ const AppSidebar = () => {
                         <span>{item.title}</span>
                     </button>
                 ))}
+                </>
+                )}
                 
                 <button
                     onClick={handleLogout}
