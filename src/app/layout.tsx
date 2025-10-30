@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { TRPCReactProvider } from "@/trpc/client";
 import { ThemedToaster } from "@/custom-components/custom-toast";
 import "./globals.css";
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
 export const metadata: Metadata = {
   title: "Flowseidon",
@@ -27,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         style={{ WebkitFontSmoothing: "antialiased" }}
       >
         <TRPCReactProvider>
-          {children}
+          <NuqsAdapter>{children}</NuqsAdapter>
           <ThemedToaster />
         </TRPCReactProvider>
       </body>

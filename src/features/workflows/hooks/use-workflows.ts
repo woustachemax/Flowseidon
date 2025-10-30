@@ -1,9 +1,16 @@
 import { trpc } from "@/trpc/client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useWorkflowsParams } from "./use-workflow-params";
 
 export const useSuspenseWorkflows = () => {
-    return trpc.workflows.getMany.useSuspenseQuery();
+    const [params] = useWorkflowsParams();
+    
+    return trpc.workflows.getMany.useSuspenseQuery({
+        page: params.page,
+        pageSize: params.pageSize,
+        search: params.search
+    });
 };
 
 export const useCreateWorkflow = () => {

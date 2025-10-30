@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 
 interface EntityHeaderProps {
     title: string;
@@ -96,14 +96,70 @@ export const EntityHeader = ({
     );
 };
 
+interface EntitySearchProps {
+    value: string;
+    onChange: (value: string) => void;
+    placeholder?: string;
+    className?: string;
+}
+
+export const EntitySearch = ({
+    value,
+    onChange,
+    placeholder = "Search...",
+    className = ""
+}: EntitySearchProps) => {
+    return (
+        <div className={`relative group ${className}`}>
+            <div className="absolute inset-0 rounded-md pointer-events-none overflow-hidden">
+                <div className="absolute inset-0 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300">
+                    <div 
+                        className="absolute inset-0 blur-sm" 
+                        style={{ 
+                            background: 'conic-gradient(from 0deg, transparent 0%, rgba(6,182,212,0.3) 10%, transparent 20%, transparent 100%)' 
+                        }} 
+                    />
+                </div>
+            </div>
+            
+            <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-neutral-400 dark:text-neutral-600 pointer-events-none" />
+                <input
+                    type="text"
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                    placeholder={placeholder}
+                    className="w-full h-10 pl-10 pr-4 text-sm
+                        bg-white dark:bg-black
+                        text-neutral-800 dark:text-neutral-200
+                        placeholder:text-neutral-400 dark:placeholder:text-neutral-600
+                        border border-neutral-300 dark:border-neutral-800
+                        rounded-md
+                        focus:outline-none
+                        focus:border-cyan-500/50 dark:focus:border-cyan-500/50
+                        shadow-[0_1px_2px_rgba(0,0,0,0.05)_inset,_0_-1px_2px_rgba(0,0,0,0.05)_inset]
+                        dark:shadow-[0_1px_2px_rgba(255,255,255,0.05)_inset,_0_-1px_2px_rgba(255,255,255,0.05)_inset]
+                        transition-all duration-200"
+                />
+            </div>
+        </div>
+    );
+};
+
 interface EntityContainerProps {
     children: ReactNode;
     className?: string;
+    header?: ReactNode;
+    search?: ReactNode;  
+    pagination?: ReactNode;
 }
 
 export const EntityContainer = ({
     children,
-    className = ""
+    className = "",
+    header,
+    search,
+    pagination
 }: EntityContainerProps) => {
     return (
         <div className={`p-6 ${className} relative`}>
@@ -124,7 +180,10 @@ export const EntityContainer = ({
                 />
             </div>
             <div className="relative z-10">
+                {header && <div className="mb-6">{header}</div>}
+                {search && <div className="mb-6">{search}</div>}
                 {children}
+                {pagination && <div className="mt-6">{pagination}</div>}
             </div>
         </div>
     );
