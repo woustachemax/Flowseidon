@@ -28,3 +28,33 @@ export const useCreateWorkflow = () => {
         }
     });
 }
+
+export const useDeleteWorkflow = () => {
+    const utils = trpc.useUtils();
+    
+    return trpc.workflows.delete.useMutation({
+        onSuccess: () => {
+            utils.workflows.getMany.invalidate();
+            toast.success("Workflow deleted successfully");
+        },
+        onError: (error: any) => {
+            toast.error(error.message || "Failed to delete workflow");
+        }
+    });
+};
+
+export const useDuplicateWorkflow = () => {
+    const utils = trpc.useUtils();
+    const router = useRouter();
+    
+    return trpc.workflows.duplicate.useMutation({
+        onSuccess: (data: any) => {
+            utils.workflows.getMany.invalidate();
+            toast.success("Workflow duplicated successfully");
+            router.push(`/workflows/${data.id}`);
+        },
+        onError: (error: any) => {
+            toast.error(error.message || "Failed to duplicate workflow");
+        }
+    });
+};

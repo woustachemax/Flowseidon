@@ -159,4 +159,29 @@ export const workFlowsRouter = createTRPCRouter({
                 where: { id: input.id }
             });
         }),
+
+    duplicate: protectedProcedure
+        .input(z.object({ id: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+            const workflow = await client.workflow.findUnique({
+                where: {
+                    id: input.id,
+                    userId: ctx.session.user.id,
+                }
+            });
+
+            if (!workflow) {
+                throw new TRPCError({
+                    code: 'NOT_FOUND',
+                    message: 'Workflow not found'
+                });
+            }
+
+            return client.workflow.create({
+                data: {
+                    name: `${workflow.name} (Copy)`,
+                    userId: ctx.session.user.id,
+                }
+            });
+        }),
 });

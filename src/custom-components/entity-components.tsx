@@ -1,6 +1,14 @@
 import { ReactNode } from "react";
 import Link from "next/link";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, PackageOpen } from "lucide-react";
+import { MoreVertical, Pencil, Trash2, Copy } from "lucide-react";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface EntityHeaderProps {
     title: string;
@@ -234,3 +242,191 @@ export const EntityPagination = ({
         </div>
     );
 }
+
+interface StateViewProps {
+    message?: string;}
+
+interface LoadingViewProps extends StateViewProps {
+    entity?: string;
+}
+
+export const LoadingView = ({
+    message,
+    entity = "items" 
+}: LoadingViewProps) => {
+    return (
+        <div className="w-full h-48 flex items-center justify-center">
+            <p className="text-cyan-600 dark:text-cyan-400">
+                {message || `Loading ${entity}...`}
+            </p>
+        </div>
+    );
+}
+
+interface EmptyViewProps extends StateViewProps {
+    onNew?: () => void;
+}
+
+export const EmptyView = ({
+    message = "No items found.",
+    onNew
+}: EmptyViewProps) => {
+    return (
+        <div className="w-full h-48 flex items-center justify-center">
+            <div className="flex flex-col items-center justify-center gap-3 px-8 py-6 rounded-lg border border-dashed border-neutral-300 dark:border-neutral-700">
+                <div className="relative">
+                    <PackageOpen className="size-12 text-neutral-400 dark:text-neutral-600" />
+                    <div 
+                        className="absolute inset-0 blur-xl opacity-30"
+                        style={{
+                            background: 'radial-gradient(circle, rgba(6, 182, 212, 0.3) 0%, transparent 70%)'
+                        }}
+                    />
+                </div>
+                <p className="text-sm text-neutral-600 dark:text-neutral-400 text-center max-w-md">
+                    {message}
+                </p>
+                {onNew && (
+                    <button
+                        onClick={onNew}
+                        className="group relative px-4 h-10 transition-all flex items-center gap-2 text-sm
+                            text-neutral-600 dark:text-neutral-400
+                            hover:text-neutral-800 dark:hover:text-neutral-200
+                            rounded-md overflow-hidden mt-2"
+                    >
+                        <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.03) 0%, rgba(6, 182, 212, 0.08) 50%, rgba(6, 182, 212, 0.03) 100%)',
+                                backdropFilter: 'blur(8px)',
+                                WebkitBackdropFilter: 'blur(8px)'
+                            }}
+                        />
+                        <Plus className="size-4 relative z-10" />
+                        <span className="relative z-10">Create New</span>
+                    </button>
+                )}
+            </div>
+        </div>
+    );
+}
+
+export const ErrorView = ({
+    message = "An error occurred. Please try again."
+}: StateViewProps) => {
+    return (
+        <div className="w-full h-48 flex items-center justify-center">
+            <div className="px-4 py-2 rounded-md border border-rose-500 bg-rose-500/10 backdrop-blur-sm">
+                <p className="text-sm text-black dark:text-white">
+                    {message}
+                </p>
+            </div>
+        </div>
+    );
+}
+
+interface EntityListProps<T> {
+    items: T[];
+    renderItem: (item: T) => ReactNode;
+    keyExtractor: (item: T) => string;
+    emptyMessage?: string;
+    onNew?: () => void;
+    className?: string;
+}
+
+export function EntityList<T>({
+    items,
+    renderItem,
+    keyExtractor,
+    emptyMessage = "No items found.",
+    onNew,
+    className = ""
+}: EntityListProps<T>) {
+    if (items.length === 0) {
+        return <EmptyView message={emptyMessage} onNew={onNew} />;
+    }
+
+    return (
+        <div className={`space-y-2 ${className}`}>
+            {items.map((item) => (
+                <div key={keyExtractor(item)}>
+                    {renderItem(item)}
+                </div>
+            ))}
+        </div>
+    );
+}
+
+interface WorkflowItemProps {
+    workflow: {
+        id: string;
+        name: string;
+        createdAt: string;
+        updatedAt: string;
+    };
+    onEdit?: (id: string) => void;
+    onDelete?: (id: string) => void;
+    onDuplicate?: (id: string) => void;
+}
+
+export const WorkflowItem = ({
+    workflow,
+    onEdit,
+    onDelete,
+    onDuplicate
+}: WorkflowItemProps) => {
+    return (
+        <div className="group relative p-4 rounded-md border border-neutral-300 dark:border-neutral-800 
+            bg-neutral-50 dark:bg-neutral-900 
+            hover:border-cyan-500/30 dark:hover:border-cyan-500/30
+            transition-all duration-200">
+            <div className="flex items-center justify-between">
+                <div className="flex-1">
+                    <h3 className="text-sm font-medium text-neutral-800 dark:text-neutral-200">
+                        {workflow.name}
+                    </h3>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-600 mt-1">
+                        Updated {new Date(workflow.updatedAt).toLocaleDateString()}
+                    </p>
+                </div>
+
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <button className="p-2 rounded-md opacity-0 group-hover:opacity-100
+                            text-neutral-600 dark:text-neutral-400
+                            hover:text-neutral-800 dark:hover:text-neutral-200
+                            hover:bg-neutral-200 dark:hover:bg-neutral-800
+                            transition-all duration-200">
+                            <MoreVertical className="size-4" />
+                        </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                        {onEdit && (
+                            <DropdownMenuItem onClick={() => onEdit(workflow.id)}>
+                                <Pencil className="size-4 mr-2" />
+                                Edit
+                            </DropdownMenuItem>
+                        )}
+                        {onDuplicate && (
+                            <DropdownMenuItem onClick={() => onDuplicate(workflow.id)}>
+                                <Copy className="size-4 mr-2" />
+                                Duplicate
+                            </DropdownMenuItem>
+                        )}
+                        {onDelete && (
+                            <>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem 
+                                    onClick={() => onDelete(workflow.id)}
+                                    className="text-rose-600 dark:text-rose-400 focus:text-rose-600 dark:focus:text-rose-400"
+                                >
+                                    <Trash2 className="size-4 mr-2" />
+                                    Delete
+                                </DropdownMenuItem>
+                            </>
+                        )}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+        </div>
+    );
+};
