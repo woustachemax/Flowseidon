@@ -162,7 +162,7 @@ export const EntityContainer = ({
     pagination
 }: EntityContainerProps) => {
     return (
-        <div className={`p-6 ${className} relative`}>
+        <div className={`p-6 ${className} relative min-h-screen flex flex-col`}>
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
                 <div 
                     className="absolute top-0 right-0 w-96 h-96 opacity-[0.02] dark:opacity-[0.03]"
@@ -179,12 +179,58 @@ export const EntityContainer = ({
                     }}
                 />
             </div>
-            <div className="relative z-10">
+            <div className="relative z-10 flex-1 flex flex-col">
                 {header && <div className="mb-6">{header}</div>}
                 {search && <div className="mb-6">{search}</div>}
-                {children}
-                {pagination && <div className="mt-6">{pagination}</div>}
+                <div className="flex-1">
+                    {children}
+                </div>
+                {pagination && <div className="mt-auto pt-6">{pagination}</div>}
             </div>
         </div>
     );
 };
+interface EntityPaginationProps {
+    page: number;
+    totalPages: number;
+    onPageChange: (page: number) => void;
+    disabled?: boolean;
+};
+export const EntityPagination = ({
+    page,
+    totalPages,
+    onPageChange,
+    disabled = false
+}: EntityPaginationProps) => {
+    return (
+        <div className="flex items-center justify-center gap-4">
+            <button
+                onClick={() => onPageChange(page - 1)}
+                disabled={disabled || page <= 1}
+                className="px-3 py-1 rounded-md
+                    bg-neutral-200 dark:bg-neutral-800
+                    text-neutral-600 dark:text-neutral-400
+                    hover:bg-neutral-300 dark:hover:bg-neutral-700
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                    transition-all"
+            >
+                Previous
+            </button>
+            <span className="text-sm text-neutral-600 dark:text-neutral-400">
+                Page {page} of {totalPages}
+            </span>
+            <button
+                onClick={() => onPageChange(page + 1)}
+                disabled={disabled || page >= totalPages}
+                className="px-3 py-1 rounded-md
+                    bg-neutral-200 dark:bg-neutral-800
+                    text-neutral-600 dark:text-neutral-400
+                    hover:bg-neutral-300 dark:hover:bg-neutral-700
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                    transition-all"
+            >
+                Next
+            </button>
+        </div>
+    );
+}
