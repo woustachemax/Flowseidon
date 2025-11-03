@@ -6,13 +6,14 @@ import { useWorkflowsParams } from "./use-workflow-params";
 export const useSuspenseWorkflows = () => {
     const [params] = useWorkflowsParams();
     
-    return trpc.workflows.getMany.useSuspenseQuery({
+    const result = trpc.workflows.getMany.useSuspenseQuery({
         page: params.page,
         pageSize: params.pageSize,
         search: params.search
     });
+    
+    return result;
 };
-
 export const useCreateWorkflow = () => {
     const router = useRouter();
     const utils = trpc.useUtils();

@@ -1,15 +1,11 @@
 import { ReactNode } from "react";
 import Link from "next/link";
 import { Plus, Search, PackageOpen } from "lucide-react";
-import { MoreVertical, Pencil, Trash2, Copy } from "lucide-react";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
+import { WorkflowIcon , Trash2, Copy, MoreVertical, Pencil} from "lucide-react";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuItem,
+    DropdownMenuContent, DropdownMenuSeparator, 
+ } from "@/components/ui/dropdown-menu";
+ import { Workflow } from "@prisma/client";
 interface EntityHeaderProps {
     title: string;
     description?: string;
@@ -104,19 +100,17 @@ export const EntityHeader = ({
     );
 };
 
-interface EntitySearchProps {
-    value: string;
-    onChange: (value: string) => void;
-    placeholder?: string;
-    className?: string;
-}
-
 export const EntitySearch = ({
     value,
     onChange,
     placeholder = "Search...",
     className = ""
-}: EntitySearchProps) => {
+}: {
+    value: string;
+    onChange: (value: string) => void;
+    placeholder?: string;
+    className?: string;
+}) => {
     return (
         <div className={`relative group ${className}`}>
             <div className="absolute inset-0 rounded-md pointer-events-none overflow-hidden">
@@ -154,21 +148,19 @@ export const EntitySearch = ({
     );
 };
 
-interface EntityContainerProps {
-    children: ReactNode;
-    className?: string;
-    header?: ReactNode;
-    search?: ReactNode;  
-    pagination?: ReactNode;
-}
-
 export const EntityContainer = ({
     children,
     className = "",
     header,
     search,
     pagination
-}: EntityContainerProps) => {
+}: {
+    children: ReactNode;
+    className?: string;
+    header?: ReactNode;
+    search?: ReactNode;  
+    pagination?: ReactNode;
+}) => {
     return (
         <div className={`p-6 ${className} relative min-h-screen flex flex-col`}>
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -198,18 +190,18 @@ export const EntityContainer = ({
         </div>
     );
 };
-interface EntityPaginationProps {
-    page: number;
-    totalPages: number;
-    onPageChange: (page: number) => void;
-    disabled?: boolean;
-};
+
 export const EntityPagination = ({
     page,
     totalPages,
     onPageChange,
     disabled = false
-}: EntityPaginationProps) => {
+}: {
+    page: number;
+    totalPages: number;
+    onPageChange: (page: number) => void;
+    disabled?: boolean;
+}) => {
     return (
         <div className="flex items-center justify-center gap-4">
             <button
@@ -243,17 +235,13 @@ export const EntityPagination = ({
     );
 }
 
-interface StateViewProps {
-    message?: string;}
-
-interface LoadingViewProps extends StateViewProps {
-    entity?: string;
-}
-
 export const LoadingView = ({
     message,
     entity = "items" 
-}: LoadingViewProps) => {
+}: {
+    message?: string;
+    entity?: string;
+}) => {
     return (
         <div className="w-full h-48 flex items-center justify-center">
             <p className="text-cyan-600 dark:text-cyan-400">
@@ -263,14 +251,13 @@ export const LoadingView = ({
     );
 }
 
-interface EmptyViewProps extends StateViewProps {
-    onNew?: () => void;
-}
-
 export const EmptyView = ({
     message = "No items found.",
     onNew
-}: EmptyViewProps) => {
+}: {
+    message?: string;
+    onNew?: () => void;
+}) => {
     return (
         <div className="w-full h-48 flex items-center justify-center">
             <div className="flex flex-col items-center justify-center gap-3 px-8 py-6 rounded-lg border border-dashed border-neutral-300 dark:border-neutral-700">
@@ -312,7 +299,9 @@ export const EmptyView = ({
 
 export const ErrorView = ({
     message = "An error occurred. Please try again."
-}: StateViewProps) => {
+}: {
+    message?: string;
+}) => {
     return (
         <div className="w-full h-48 flex items-center justify-center">
             <div className="px-4 py-2 rounded-md border border-rose-500 bg-rose-500/10 backdrop-blur-sm">
@@ -324,15 +313,6 @@ export const ErrorView = ({
     );
 }
 
-interface EntityListProps<T> {
-    items: T[];
-    renderItem: (item: T) => ReactNode;
-    keyExtractor: (item: T) => string;
-    emptyMessage?: string;
-    onNew?: () => void;
-    className?: string;
-}
-
 export function EntityList<T>({
     items,
     renderItem,
@@ -340,7 +320,14 @@ export function EntityList<T>({
     emptyMessage = "No items found.",
     onNew,
     className = ""
-}: EntityListProps<T>) {
+}: {
+    items: T[];
+    renderItem: (item: T) => ReactNode;
+    keyExtractor: (item: T) => string;
+    emptyMessage?: string;
+    onNew?: () => void;
+    className?: string;
+}) {
     if (items.length === 0) {
         return <EmptyView message={emptyMessage} onNew={onNew} />;
     }
@@ -357,57 +344,64 @@ export function EntityList<T>({
 }
 
 interface WorkflowItemProps {
-    workflow: {
-        id: string;
-        name: string;
-        createdAt: string;
-        updatedAt: string;
-    };
+    data: Workflow;
     onEdit?: (id: string) => void;
     onDelete?: (id: string) => void;
     onDuplicate?: (id: string) => void;
 }
 
 export const WorkflowItem = ({
-    workflow,
+    data,
     onEdit,
     onDelete,
     onDuplicate
 }: WorkflowItemProps) => {
     return (
-        <div className="group relative p-4 rounded-md border border-neutral-300 dark:border-neutral-800 
-            bg-neutral-50 dark:bg-neutral-900 
-            hover:border-cyan-500/30 dark:hover:border-cyan-500/30
-            transition-all duration-200">
+        <div 
+            className="group relative p-4 rounded-md border border-neutral-300 dark:border-neutral-800 
+                bg-neutral-50 dark:bg-neutral-900 
+                hover:border-cyan-500/30 dark:hover:border-cyan-500/30
+                transition-all duration-200"
+        >
             <div className="flex items-center justify-between">
-                <div className="flex-1">
-                    <h3 className="text-sm font-medium text-neutral-800 dark:text-neutral-200">
-                        {workflow.name}
-                    </h3>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-600 mt-1">
-                        Updated {new Date(workflow.updatedAt).toLocaleDateString()}
-                    </p>
+                <div 
+                    onClick={() => onEdit?.(data.id)}
+                    className="flex items-center gap-3 flex-1 cursor-pointer"
+                >
+                    <div className="p-2 rounded-md bg-neutral-200 dark:bg-neutral-800">
+                        <WorkflowIcon className="size-4 text-neutral-600 dark:text-neutral-400" />
+                    </div>
+                    <div className="flex-1">
+                        <h3 className="text-sm font-medium text-neutral-800 dark:text-neutral-200">
+                            {data.name}
+                        </h3>
+                        <p className="text-xs text-neutral-500 dark:text-neutral-600 mt-1">
+                            Updated {new Date(data.updatedAt).toLocaleDateString()}
+                        </p>
+                    </div>
                 </div>
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <button className="p-2 rounded-md opacity-0 group-hover:opacity-100
-                            text-neutral-600 dark:text-neutral-400
-                            hover:text-neutral-800 dark:hover:text-neutral-200
-                            hover:bg-neutral-200 dark:hover:bg-neutral-800
-                            transition-all duration-200">
+                        <button 
+                            className="p-2 rounded-md opacity-0 group-hover:opacity-100
+                                text-neutral-600 dark:text-neutral-400
+                                hover:text-neutral-800 dark:hover:text-neutral-200
+                                hover:bg-neutral-200 dark:hover:bg-neutral-800
+                                transition-all duration-200"
+                        >
                             <MoreVertical className="size-4" />
                         </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
                         {onEdit && (
-                            <DropdownMenuItem onClick={() => onEdit(workflow.id)}>
+                            <DropdownMenuItem onClick={() => onEdit(data.id)}>
                                 <Pencil className="size-4 mr-2" />
                                 Edit
                             </DropdownMenuItem>
                         )}
                         {onDuplicate && (
-                            <DropdownMenuItem onClick={() => onDuplicate(workflow.id)}>
+                            <DropdownMenuItem onClick={() => onDuplicate(data.id)}>
                                 <Copy className="size-4 mr-2" />
                                 Duplicate
                             </DropdownMenuItem>
@@ -416,7 +410,7 @@ export const WorkflowItem = ({
                             <>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem 
-                                    onClick={() => onDelete(workflow.id)}
+                                    onClick={() => onDelete(data.id)}
                                     className="text-rose-600 dark:text-rose-400 focus:text-rose-600 dark:focus:text-rose-400"
                                 >
                                     <Trash2 className="size-4 mr-2" />

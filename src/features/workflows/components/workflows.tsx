@@ -1,117 +1,50 @@
 "use client"
 
-import { useSuspenseWorkflows, useCreateWorkflow } from "@/features/workflows/hooks/use-workflows";
+import { useSuspenseWorkflows, useCreateWorkflow, useDeleteWorkflow, useDuplicateWorkflow } from "@/features/workflows/hooks/use-workflows";
 import { EntityContainer, EntityHeader, EntityPagination, EntitySearch, LoadingView, ErrorView, EmptyView, EntityList } from "@/custom-components/entity-components";
 import { useUpgradeModal } from "@/hooks/use-upgrade-modal";
 import { useWorkflowsParams } from "../hooks/use-workflow-params";
 import { useEntitySearch } from "@/hooks/use-entity-search";
 import { useRouter } from "next/navigation";
-import { MoreVertical, Pencil, Trash2, Copy } from "lucide-react";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { WorkflowItem } from "@/custom-components/entity-components";
 
-interface WorkflowItemProps {
-    workflow: {
-        id: string;
-        name: string;
-        createdAt: string;
-        updatedAt: string;
-    };
-    onEdit?: (id: string) => void;
-    onDelete?: (id: string) => void;
-    onDuplicate?: (id: string) => void;
-}
-
-export const WorkflowItem = ({
-    workflow,
-    onEdit,
-    onDelete,
-    onDuplicate
-}: WorkflowItemProps) => {
-    return (
-        <div className="group relative p-4 rounded-md border border-neutral-300 dark:border-neutral-800 
-            bg-neutral-50 dark:bg-neutral-900 
-            hover:border-cyan-500/30 dark:hover:border-cyan-500/30
-            transition-all duration-200">
-            <div className="flex items-center justify-between">
-                <div className="flex-1">
-                    <h3 className="text-sm font-medium text-neutral-800 dark:text-neutral-200">
-                        {workflow.name}
-                    </h3>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-600 mt-1">
-                        Updated {new Date(workflow.updatedAt).toLocaleDateString()}
-                    </p>
-                </div>
-
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <button className="p-2 rounded-md opacity-0 group-hover:opacity-100
-                            text-neutral-600 dark:text-neutral-400
-                            hover:text-neutral-800 dark:hover:text-neutral-200
-                            hover:bg-neutral-200 dark:hover:bg-neutral-800
-                            transition-all duration-200">
-                            <MoreVertical className="size-4" />
-                        </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                        {onEdit && (
-                            <DropdownMenuItem onClick={() => onEdit(workflow.id)}>
-                                <Pencil className="size-4 mr-2" />
-                                Edit
-                            </DropdownMenuItem>
-                        )}
-                        {onDuplicate && (
-                            <DropdownMenuItem onClick={() => onDuplicate(workflow.id)}>
-                                <Copy className="size-4 mr-2" />
-                                Duplicate
-                            </DropdownMenuItem>
-                        )}
-                        {onDelete && (
-                            <>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem 
-                                    onClick={() => onDelete(workflow.id)}
-                                    className="text-rose-600 dark:text-rose-400 focus:text-rose-600 dark:focus:text-rose-400"
-                                >
-                                    <Trash2 className="size-4 mr-2" />
-                                    Delete
-                                </DropdownMenuItem>
-                            </>
-                        )}
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            </div>
-        </div>
-    );
-};
 
 export const WorkflowItems = () => {
     const [workflows] = useSuspenseWorkflows();
     const router = useRouter();
+    const deleteWorkflow = useDeleteWorkflow();
+    const duplicateWorkflow = useDuplicateWorkflow();
+    
+    if (!workflows) {
+        return <LoadingView entity="Workflows" />;
+    }
     
     const handleEdit = (id: string) => {
         router.push(`/workflows/${id}`);
     };
     
     const handleDelete = (id: string) => {
-        console.log('Delete workflow:', id);
+        deleteWorkflow.mutate({ id });
     };
     
     const handleDuplicate = (id: string) => {
-        console.log('Duplicate workflow:', id);
+        duplicateWorkflow.mutate({ id });
     };
+    
+    const data = workflows as any;
+    const workflowData = data.json || data; 
+    const items = (workflowData.items || []) as typeof workflows.items;
+    
+    if (items.length === 0) {
+        return <WorkflowsEmpty />;
+    }
     
     return (
         <EntityList
-            items={workflows.items}
+            items={items}
             renderItem={(workflow) => (
                 <WorkflowItem
-                    workflow={workflow}
+                    data={workflow}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                     onDuplicate={handleDuplicate}
@@ -172,10 +105,23 @@ export const WorkflowsHeader = () => {
 export const WorkflowsPagination = () => { 
     const [workflows] = useSuspenseWorkflows();
     const [params, setParams] = useWorkflowsParams();
+    
+    if (!workflows) {
+        return null;
+    }
+    
+    const data = workflows as any;
+    const workflowData = data.json || data;
+    const pagination = workflowData.pagination;
+    
+    if (!pagination) {
+        return null;
+    }
+    
     return (   
         <EntityPagination 
             disabled={false} 
-            totalPages={workflows.pagination.totalPages}
+            totalPages={pagination.totalPages}
             page={params.page}
             onPageChange={(page) => setParams({
                 ...params,
